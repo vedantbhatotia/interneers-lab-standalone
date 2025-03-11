@@ -1,14 +1,13 @@
 # Interneers Lab
 
-Creating an inventory Management System with django as a backend and React + typescript as frontend
+Creating an Inventory Management System with Django as the backend and React + TypeScript as the frontend.
 
-Models in Django
+## Models in Django
 
-1-Product Model
-      --name
-      --description
-      --category
-      --price
-      --brand
-      --quantity
-
+### 1. Product Model
+   - **name**
+   - **description**
+   - **category**
+   - **price**
+   - **brand**
+   - **quantity**
