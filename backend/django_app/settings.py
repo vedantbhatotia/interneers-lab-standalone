@@ -123,3 +123,15 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+from mongoengine import connect
+MONGO_DB_NAME = "interneers_lab"
+MONGO_HOST = "localhost"
+MONGO_PORT = 27018 
+MONGO_USER = "root"
+MONGO_PASS = "example"
+
+connect(
+    db=MONGO_DB_NAME,
+    host=f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/?authSource=admin"
+)
