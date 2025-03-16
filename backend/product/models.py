@@ -1,5 +1,6 @@
 import mongoengine
-from datetime import datetime
+from datetime import datetime, timezone
+
 class Product(mongoengine.Document):
     name = mongoengine.StringField(required=True)
     description = mongoengine.StringField(required=True)
@@ -7,11 +8,13 @@ class Product(mongoengine.Document):
     price = mongoengine.IntField(required=True)
     brand = mongoengine.StringField(required=True)
     stock = mongoengine.IntField(required=True)
-    created_at = mongoengine.DateTimeField(default=datetime.now)
-    updated_at = mongoengine.DateTimeField(default=datetime.now)
+    created_at = mongoengine.DateTimeField(default=lambda: datetime.now(timezone.utc))
+    updated_at = mongoengine.DateTimeField(default=lambda: datetime.now(timezone.utc))
+    
     meta = {
-        'collection': 'products' # maps this model to the 'products' collection in MongoDB
+        'collection': 'products'  # maps this model to the 'products' collection in MongoDB
     }
-    def save(self,*args,**kwargs):
-        self.updated_at = datetime.utcnow()
-        return super(Product, self).save(*args, **kwargs) #calls the original MongoEngine .save() method.
+    
+    def save(self, *args, **kwargs):
+        self.updated_at = datetime.now(timezone.utc)
+        return super(Product, self).save(*args, **kwargs)
