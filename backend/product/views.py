@@ -19,12 +19,14 @@ class ProductCreateView(APIView):
                 return Response({'error': e.detail}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ProductListView(APIView):
     def get(self, request: Request) -> Response:
         service = ProductService()
         products = service.list_products()
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class ProductDetailView(APIView):
     def get(self, request: Request, product_id: str) -> Response:
@@ -36,8 +38,8 @@ class ProductDetailView(APIView):
         except ValidationError as e:
             return Response({'error': e.detail}, status=status.HTTP_404_NOT_FOUND)
 
-class ProductUpdateView(APIView):
 
+class ProductUpdateView(APIView):
     def put(self, request: Request, product_id: str) -> Response:
         service = ProductService()
         try:
@@ -60,6 +62,6 @@ class ProductDeleteView(APIView):
         service = ProductService()
         try:
             service.delete_product(product_id)
-            return Response({'message': 'Product deleted successfully'}, status=status.HTTP_204_OK)
+            return Response({'message': 'Product deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
         except ValidationError as e:
             return Response({'error': e.detail}, status=status.HTTP_404_NOT_FOUND)

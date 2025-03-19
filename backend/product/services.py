@@ -21,17 +21,15 @@ class ProductService:
     def list_products(self) -> list[Product]:
         return self.repository.get_all_products()
 
-    def update_product(self, product_id: str, price: float = None, stock: int = None) -> Product:
-        update_fields = {}
-        if price is not None:
-            update_fields['price'] = price
-        if stock is not None:
-            update_fields['stock'] = stock
+    def update_product(self, product_id: str, **kwargs) -> Product:
+        if not kwargs:
+            raise ValidationError({"error": "No update fields provided."})
 
-        updated = self.repository.update_product(product_id, **update_fields)
+        updated = self.repository.update_product(product_id, **kwargs)
         if not updated:
             raise ValidationError({"id": f"Product with ID '{product_id}' not found."})
         return updated
+
 
     def delete_product(self, product_id: str) -> bool:
         deleted = self.repository.delete_product(product_id)

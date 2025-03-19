@@ -22,6 +22,12 @@ class ProductRepository:
             return Product.objects.get(id=obj_id)
         except (DoesNotExist, ValidationError):
             return None
+        
+    def get_product_by_name(self, name: str) -> Product | None:
+        try:
+            return Product.objects.get(name=name)
+        except DoesNotExist:
+            return None
 
     def delete_product(self, product_id: str) -> bool:
         try:
@@ -37,6 +43,7 @@ class ProductRepository:
             obj_id = ObjectId(product_id)
             product = Product.objects.get(id=obj_id)
             product.update(**kwargs)
+            # used because the update method makes the changes in the mongo-db document but the python object does not contain the updated object so  we need to reload it to get the updated object
             product.reload()
             return product
         except (DoesNotExist, ValidationError):
