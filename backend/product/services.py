@@ -2,6 +2,16 @@ from rest_framework.exceptions import ValidationError
 from .repositories import ProductRepository
 from .models import Product
 
+class ProductCategoryService:
+    def __init__(self):
+        self.repository = ProductRepository()
+
+    
+
+
+
+
+
 class ProductService:
     def __init__(self):
         self.repository = ProductRepository()

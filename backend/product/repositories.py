@@ -1,13 +1,63 @@
 from bson import ObjectId
 from mongoengine.errors import DoesNotExist, ValidationError
-from .models import Product
+from .models import Product, ProductCategory
+
+class ProductCategoryRepository:
+    """Handles database interactions for ProductCategory"""
+
+    def create_category(self, title: str, description: str) -> ProductCategory:
+        try:
+            new_category = ProductCategory(title=title, description=description)
+            new_category.save()
+            return new_category
+        except ValidationError as e:
+            raise e 
+        
+    def get_all_categories(self) -> list[ProductCategory]:
+        return list(ProductCategory.objects.all())
+
+    def get_category_by_id(self, category_id: str) -> ProductCategory | None:
+        try:
+            return ProductCategory.objects.get(id=category_id)
+        except (DoesNotExist, ValidationError) as e:
+            return None
+        
+    def update_category(self, category_id: str, **kwargs) -> ProductCategory | None:
+        try:
+            obj_id = ObjectId(category_id)
+            category = ProductCategory.objects.get(id=obj_id)
+            if category:
+                category.update(**kwargs)
+                category.reload()
+                return category
+            return None
+        except (DoesNotExist, ValidationError) as e:
+            return None
+        
+    def delete_category(self, category_id: str) -> bool:
+        try:
+            obj_id = ObjectId(category_id)
+            category = ProductCategory.objects.get(id=obj_id)
+            if category:
+                category.delete()
+                return True
+            return False
+        except (DoesNotExist, ValidationError) as e:
+            return False
 
 class ProductRepository:
     """Handles database interactions for Product"""
 
-    def create_product(self, name: str, description: str, category: str, price: float, brand: str, stock: int) -> Product:
+    def create_product(self, name: str, description: str, category: ProductCategory, price: float, brand: str, stock: int) -> Product:
         try:
-            new_product = Product(name=name, description=description, category=category, price=price, brand=brand, stock=stock)
+            new_product = Product(
+                name=name, 
+                description=description, 
+                category=category,
+                price=price, 
+                brand=brand, 
+                stock=stock
+            )
             new_product.save()
             return new_product
         except ValidationError as e:
@@ -18,11 +68,11 @@ class ProductRepository:
 
     def get_product_by_id(self, product_id: str) -> Product | None:
         try:
-            obj_id = ObjectId(product_id) 
+            obj_id = ObjectId(product_id)
             return Product.objects.get(id=obj_id)
         except (DoesNotExist, ValidationError):
             return None
-        
+
     def get_product_by_name(self, name: str) -> Product | None:
         try:
             return Product.objects.get(name=name)
@@ -39,11 +89,14 @@ class ProductRepository:
             return False
 
     def update_product(self, product_id: str, **kwargs) -> Product | None:
+        """
+        Expects that if the category is being updated, kwargs["category"] is a ProductCategory instance.
+        """
         try:
             obj_id = ObjectId(product_id)
             product = Product.objects.get(id=obj_id)
             product.update(**kwargs)
-            # used because the update method makes the changes in the mongo-db document but the python object does not contain the updated object so  we need to reload it to get the updated object
+            # Reload to reflect updated values
             product.reload()
             return product
         except (DoesNotExist, ValidationError):
