@@ -1,7 +1,7 @@
 from rest_framework.exceptions import ValidationError
 from .repositories import ProductRepository, ProductCategoryRepository
 from .models import Product, ProductCategory
-
+from mongoengine.queryset.queryset import QuerySet
 class ProductCategoryService:
     def __init__(self):
         self.repository = ProductCategoryRepository()
@@ -55,7 +55,7 @@ class ProductService:
             raise ValidationError({"id": f"Product with ID '{product_id}' not found."})
         return product
 
-    def list_products(self) -> list[Product]:
+    def list_products(self) ->QuerySet:
         return self.repository.get_all_products()
 
     def update_product(self, product_id: str, **kwargs) -> Product:

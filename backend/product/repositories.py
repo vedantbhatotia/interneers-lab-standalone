@@ -63,8 +63,8 @@ class ProductRepository:
         except ValidationError as e:
             raise e
 
-    def get_all_products(self) -> list[Product]:
-        return list(Product.objects())
+    def get_all_products(self):
+        return Product.objects
 
     def get_product_by_id(self, product_id: str) -> Product | None:
         try:
