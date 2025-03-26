@@ -13,7 +13,7 @@ class ProductCategoryService:
                 raise ValidationError({"title": "Category already exists"})
         return self.repository.create_category(title,description)
 
-    def list_categories(self) -> list[ProductCategory]:
+    def list_categories(self) -> QuerySet:
         return self.repository.get_all_categories()
 
     def get_category_by_id(self, category_id: str) -> ProductCategory:

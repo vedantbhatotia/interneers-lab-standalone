@@ -13,8 +13,8 @@ class ProductCategoryRepository:
         except ValidationError as e:
             raise e 
         
-    def get_all_categories(self) -> list[ProductCategory]:
-        return list(ProductCategory.objects.all())
+    def get_all_categories(self):
+        return ProductCategory.objects.all()
 
     def get_category_by_id(self, category_id: str) -> ProductCategory | None:
         try:
