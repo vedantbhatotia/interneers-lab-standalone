@@ -1,17 +1,13 @@
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from .services import ProductService,ProductCategoryService
 from .serializers import ProductSerializer
-from rest_framework import generics
-
-# from rest_framework import generics, status
-# from rest_framework.response import Response
-# from rest_framework.exceptions import ValidationError
-# from .services import ProductService, ProductCategoryService
-# from .serializers import ProductSerializer, ProductCategorySerializer
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+from .services import ProductService, ProductCategoryService
+from .serializers import ProductSerializer, ProductCategorySerializer
 
 # Product Views
 class ProductListCreateApiView(generics.ListCreateAPIView):
@@ -24,6 +20,9 @@ class ProductListCreateApiView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         service = ProductService()
         try:
+            # The serializer.validated_data["category"] will be a ProductCategory instance,
+            # because of the PrimaryKeyRelatedField. If it’s not found, the serializer would already
+            # have raised a ValidationError.
             product = service.create_product(**serializer.validated_data)
             serializer.instance = product
         except ValidationError as e:
@@ -64,10 +63,10 @@ class ProductRetrieveUpdateDeleteApiView(generics.RetrieveUpdateDestroyAPIView):
             raise ValidationError({"id": f"Product with ID '{product_id}' not found."})
 
 
+
 # Category Views
 class CategoryListCreateApiView(generics.ListCreateAPIView):
     serializer_class = ProductCategorySerializer
-
     def get_queryset(self):
         service = ProductCategoryService()
         return service.list_categories()
@@ -79,7 +78,7 @@ class CategoryListCreateApiView(generics.ListCreateAPIView):
             serializer.instance = category
         except ValidationError as e:
             raise ValidationError({'error': e.detail})
-
+        
 
 class CategoryRetrieveUpdateDeleteApiView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductCategorySerializer

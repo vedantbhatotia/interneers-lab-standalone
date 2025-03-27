@@ -1,17 +1,19 @@
 from rest_framework.exceptions import ValidationError
 from .repositories import ProductRepository, ProductCategoryRepository
 from .models import Product, ProductCategory
-from mongoengine.queryset.queryset import QuerySet
+from django.db.models.query import QuerySet
+from mongoengine.errors import NotUniqueError
+from rest_framework.response import Response
 class ProductCategoryService:
     def __init__(self):
         self.repository = ProductCategoryRepository()
 
     def create_category(self, title: str, description: str) -> ProductCategory:
-        categories = self.repository.get_all_categories()
-        for cat in categories:
-            if cat.title.lower() == title.lower():
-                raise ValidationError({"title": "Category already exists"})
-        return self.repository.create_category(title,description)
+       try:
+            new_category = self.repository.create_category(title, description)
+            return new_category
+       except NotUniqueError:
+            raise ValidationError({"title": "Category with this title already exists."})
 
     def list_categories(self) -> QuerySet:
         return self.repository.get_all_categories()
@@ -35,20 +37,28 @@ class ProductCategoryService:
         return True
 
 
+
 class ProductService:
     def __init__(self):
         self.repository = ProductRepository()
         self.category_repository = ProductCategoryRepository()
 
-    def create_product(self, name: str, description: str, category_id: str, price: float, brand: str, stock: int) -> Product:
+    def create_product(self, name: str, description: str, category, price: float, brand: str, stock: int) -> Product:
         if self.repository.get_product_by_name(name):
             raise ValidationError({"name": "Product already exists"})
-        category = self.category_repository.get_category_by_id(category_id)
-        if not category:
-            raise ValidationError({"category_id": f"Category with ID '{category_id}' not found."})
 
-        return self.repository.create_product(name, description, category, price, brand, stock)
+        # Ensure the category is a ProductCategory instance.
+        if not isinstance(category, ProductCategory):
+            # Lookup by id using the repository.
+            category_obj = self.category_repository.get_category_by_id(category)
+            if not category_obj:
+                raise ValidationError({"category": f"Category with id '{category}' not found."})
+        else:
+            category_obj = category
 
+        return self.repository.create_product(name, description, category_obj, price, brand, stock)
+
+    
     def get_product_by_id(self, product_id: str) -> Product:
         product = self.repository.get_product_by_id(product_id)
         if not product:

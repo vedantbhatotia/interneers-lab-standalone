@@ -4,7 +4,6 @@ from .models import Product, ProductCategory
 
 class ProductCategoryRepository:
     """Handles database interactions for ProductCategory"""
-
     def create_category(self, title: str, description: str) -> ProductCategory:
         try:
             new_category = ProductCategory(title=title, description=description)
@@ -18,7 +17,14 @@ class ProductCategoryRepository:
 
     def get_category_by_id(self, category_id: str) -> ProductCategory | None:
         try:
-            return ProductCategory.objects.get(id=category_id)
+            obj_id = ObjectId(category_id)
+            return ProductCategory.objects.get(id=obj_id)
+        except (DoesNotExist, ValidationError) as e:
+            return None
+        
+    def get_category_by_name(self, category_name: str) -> ProductCategory | None:
+        try:
+            return ProductCategory.objects.get(title=category_name)
         except (DoesNotExist, ValidationError) as e:
             return None
         
