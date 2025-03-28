@@ -13,4 +13,8 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_app.settings")
 
+# execute the script everytime the server starts
+from product.seed import seed_categories
+seed_categories()
+
 application = get_wsgi_application()
