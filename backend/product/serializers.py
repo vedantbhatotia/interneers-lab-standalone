@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.core.validators import MinValueValidator
-from .models import Product, ProductCategory
+from .Product_models import Product
+from .Category_models import  ProductCategory
 
 class ProductCategorySerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)

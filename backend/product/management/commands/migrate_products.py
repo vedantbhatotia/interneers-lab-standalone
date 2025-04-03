@@ -1,8 +1,12 @@
+import logging
 from django.core.management.base import BaseCommand
-from product.models import Product, ProductCategory
+from product.Product_models import Product
+from product.Category_models import ProductCategory
 
 DEFAULT_CATEGORY_TITLE = "Uncategorized"
 DEFAULT_CATEGORY_DESCRIPTION = "Default category for products with no category."
+
+logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     help = "Migrate existing products missing a product category by assigning them a default category."
@@ -15,22 +19,22 @@ class Command(BaseCommand):
                 description=DEFAULT_CATEGORY_DESCRIPTION
             )
             default_category.save()
-            self.stdout.write(self.style.SUCCESS(f"Created default category '{DEFAULT_CATEGORY_TITLE}'.")) 
+            logger.info(f"Created default category '{DEFAULT_CATEGORY_TITLE}'.")
         else:
-            self.stdout.write(f"Default category '{DEFAULT_CATEGORY_TITLE}' already exists.")
+           logger.info(f"Default category '{DEFAULT_CATEGORY_TITLE}' already exists.")
 
 
         products_without_category = Product.objects(category=None)
         total = products_without_category.count()
 
         if total == 0:
-            self.stdout.write("No products found without a category.")
+            logger.info("No Products without a category found")
             return
 
 
         for product in products_without_category:
             product.category = default_category
             product.save()
-            self.stdout.write(self.style.SUCCESS(f"Updated product '{product.name}' with default category."))
+            logger.info(f"Updated product '{product.name}' with default category.")
 
-        self.stdout.write(self.style.SUCCESS(f"Migration complete. {total} products updated."))
+        logger.info(f"Migration complete. {total} products updated.")

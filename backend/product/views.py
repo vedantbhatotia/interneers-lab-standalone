@@ -3,14 +3,19 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import ValidationError
 from .serializers import ProductSerializer, ProductCategorySerializer
-from .services import ProductService, ProductCategoryService
+from .ProductService import ProductService
+from .ProductCategoryService import ProductCategoryService
 from .mongo_filter_backend import MongoCustomFilter
 
 class ProductListCreateApiView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
-    filter_backends = [MongoCustomFilter,filters.OrderingFilter]  
-    ordering_fields = ['price', 'stock', 'created_at']
-    ordering = ['created_at']  
+    filter_backends = [MongoCustomFilter,filters.OrderingFilter]
+    ordering_fields = [
+        'price',
+        'stock',
+        'created_at'
+    ]
+    ordering = ['created_at']
     def get_queryset(self):
         service = ProductService()
         return service.list_products()
