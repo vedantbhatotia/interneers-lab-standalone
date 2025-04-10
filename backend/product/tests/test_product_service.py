@@ -157,3 +157,5 @@ def test_delete_product_not_found(mock_repositories):
         service.delete_product("not-exist")
 
     assert "Product with ID 'not-exist' not found." in str(exc_info.value)
+
+

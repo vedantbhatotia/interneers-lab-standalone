@@ -39,3 +39,4 @@ class ProductCategoryService:
         if not deleted:
             raise ValidationError({"id": f"Category with ID '{category_id}' not found."})
         return True
+
