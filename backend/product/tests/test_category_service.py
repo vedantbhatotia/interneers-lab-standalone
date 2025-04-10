@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 from product.ProductCategoryService import ProductCategoryService
 from product.Category_models import ProductCategory
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError,NotFound
 
 
 @pytest.fixture
@@ -48,7 +48,7 @@ def test_get_category_by_id_not_found(mock_repository):
     service, repo = mock_repository
     repo.get_category_by_id.return_value = None
 
-    with pytest.raises(ValidationError) as exc:
+    with pytest.raises(NotFound) as exc:
         service.get_category_by_id("invalid-id")
 
     assert "not found" in str(exc.value)

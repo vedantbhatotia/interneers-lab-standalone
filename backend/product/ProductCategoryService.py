@@ -1,4 +1,4 @@
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError,NotFound
 from .ProductCategoryRepository import ProductCategoryRepository
 from .Category_models import ProductCategory
 from django.db.models.query import QuerySet
@@ -23,7 +23,7 @@ class ProductCategoryService:
     def get_category_by_id(self, category_id: str) -> ProductCategory:
         category = self.repository.get_category_by_id(category_id)
         if not category:
-            raise ValidationError({"category_id": f"Category with ID '{category_id}' not found."})
+            raise NotFound({"category_id": f"Category with ID '{category_id}' not found."})
         return category
 
     def update_category(self, category_id: str, **kwargs) -> ProductCategory:

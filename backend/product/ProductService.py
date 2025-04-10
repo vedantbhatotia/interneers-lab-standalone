@@ -1,4 +1,4 @@
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError,NotFound
 from .ProductRepository import ProductRepository
 from .ProductCategoryRepository import ProductCategoryRepository
 from .Product_models import Product
@@ -27,7 +27,7 @@ class ProductService:
     def get_product_by_id(self, product_id: str) -> Product:
         product = self.repository.get_product_by_id(product_id)
         if not product:
-            raise ValidationError(detail={"error": f"Product with ID '{product_id}' not found."})
+            raise NotFound(detail={"error": f"Product with ID '{product_id}' not found."})
         return product
 
     def list_products(self):

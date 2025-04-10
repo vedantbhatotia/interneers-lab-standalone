@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 from product.ProductService import ProductService
 from product.Product_models import Product
 from product.Category_models import ProductCategory
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError,NotFound
 
 
 @pytest.fixture
@@ -67,7 +67,7 @@ def test_get_product_by_id_not_found(mock_repositories):
     service, product_repo, _ = mock_repositories
     product_repo.get_product_by_id.return_value = None
 
-    with pytest.raises(ValidationError) as exc_info:
+    with pytest.raises(NotFound) as exc_info:
         service.get_product_by_id("invalid-id")
 
     assert "Product with ID 'invalid-id' not found." in str(exc_info.value)
