@@ -100,33 +100,33 @@ TEST_MONGO_DB_NAME = os.getenv("TEST_MONGO_DB_NAME", "interneers_lab_test")
 try:
     # Detect if running in test mode (pytest or Django test command)
     IS_TESTING = "pytest" in os.path.basename(sys.argv[0]) or "test" in sys.argv
-    print("📦 MongoDB Connection Settings:")
-    print(f"🔹 IS_TESTING = {IS_TESTING}")
-    print(f"🔹 MONGO_DB_NAME = {MONGO_DB_NAME}")
-    print(f"🔹 TEST_MONGO_DB_NAME = {TEST_MONGO_DB_NAME}")
-    print(f"🔹 HOST = {MONGO_HOST}:{MONGO_PORT}")
-    print(f"🔹 USER = {MONGO_USER}")
-    print(f"🔹 sys.argv = {sys.argv}")
+    print(" MongoDB Connection Settings:")
+    print(f" IS_TESTING = {IS_TESTING}")
+    print(f" MONGO_DB_NAME = {MONGO_DB_NAME}")
+    print(f" TEST_MONGO_DB_NAME = {TEST_MONGO_DB_NAME}")
+    print(f" HOST = {MONGO_HOST}:{MONGO_PORT}")
+    print(f" USER = {MONGO_USER}")
+    print(f" sys.argv = {sys.argv}")
 
     if IS_TESTING:
-        print("⚠️  Connecting to TEST MongoDB...")
+        print(" Connecting to TEST MongoDB...")
         connect(
             db=TEST_MONGO_DB_NAME,
             host=f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/?authSource=admin",
             alias="default",
             uuidRepresentation="standard"
         )
-        print("✅ Connected to TEST MongoDB")
+        print(" Connected to TEST MongoDB")
     else:
-        print("🚀 Connecting to PROD MongoDB...")
+        print("Connecting to PROD MongoDB...")
         connect(
             db=MONGO_DB_NAME,
             host=f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/?authSource=admin",
             alias="default",
             uuidRepresentation="standard"
         )
-        print("✅ Connected to PROD MongoDB")
+        print(" Connected to PROD MongoDB")
 
 except Exception as e:
-    print("❌ MongoDB connection failed!")
+    print(" MongoDB connection failed!")
     print(f"Error: {e}")
