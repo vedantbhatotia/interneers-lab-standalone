@@ -37,11 +37,16 @@ def seed_categories():
                 logger.info(f"Category '{data['title']}' added.")
             except NotUniqueError:
                 logger.info(f"Category '{data['title']}' already exists.")
-                # print("categories already added")
 
 
 def seed_legacy_products():
+    default_category = ProductCategory.objects(title="Electronics").first()
+    if not default_category:
+        logger.error("Default category 'Electronics' not found. Cannot seed legacy products.")
+        return
+
     for data in DEFAULT_PRODUCTS:
+        data["category"] = default_category
         existing = Product.objects(name=data["name"]).first()
         if not existing:
             Product(**data).save()
