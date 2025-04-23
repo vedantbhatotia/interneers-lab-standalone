@@ -1,7 +1,7 @@
 from rest_framework import generics, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, NotFound  
 from .serializers import ProductSerializer, ProductCategorySerializer
 from .ProductService import ProductService
 from .ProductCategoryService import ProductCategoryService
@@ -9,13 +9,14 @@ from .mongo_filter_backend import MongoCustomFilter
 
 class ProductListCreateApiView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
-    filter_backends = [MongoCustomFilter,filters.OrderingFilter]
+    filter_backends = [MongoCustomFilter, filters.OrderingFilter]
     ordering_fields = [
         'price',
         'stock',
         'created_at'
     ]
     ordering = ['created_at']
+
     def get_queryset(self):
         service = ProductService()
         return service.list_products()
@@ -23,7 +24,6 @@ class ProductListCreateApiView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         service = ProductService()
         try:
-            # The serializer.validated_data["category"] will be a ProductCategory instance.
             product = service.create_product(**serializer.validated_data)
             serializer.instance = product
         except ValidationError as e:
@@ -42,7 +42,7 @@ class ProductRetrieveUpdateDeleteApiView(generics.RetrieveUpdateDestroyAPIView):
         product_id = self.kwargs.get('product_id')
         product = service.get_product_by_id(product_id)
         if not product:
-            raise ValidationError({"id": f"Product with ID '{product_id}' not found."})
+            raise NotFound(detail={"id": f"Product with ID '{product_id}' not found."}) 
         return product
 
     def perform_update(self, serializer):
@@ -60,10 +60,8 @@ class ProductRetrieveUpdateDeleteApiView(generics.RetrieveUpdateDestroyAPIView):
         if not service.delete_product(product_id):
             raise ValidationError({"id": f"Product with ID '{product_id}' not found."})
 
-
 class CategoryListCreateApiView(generics.ListCreateAPIView):
     serializer_class = ProductCategorySerializer
-    # pagination_class = StandardResultsSetPagination
     filter_backends = [filters.OrderingFilter]    
 
     def get_queryset(self):
@@ -92,7 +90,7 @@ class CategoryRetrieveUpdateDeleteApiView(generics.RetrieveUpdateDestroyAPIView)
         category_id = self.kwargs.get('category_id')
         category = service.get_category_by_id(category_id)
         if not category:
-            raise ValidationError({"id": f"Category with ID '{category_id}' not found."})
+            raise NotFound(detail={"id": f"Category with ID '{category_id}' not found."})
         return category
 
     def perform_update(self, serializer):
