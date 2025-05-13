@@ -23,12 +23,12 @@ function App() {
         <NavBar></NavBar>
         <main style={{ padding: "1rem" }}>
           <Routes>
-            <Route path="/home" element={<Home></Home>}></Route>
+            {/* <Route path="/home" element={<Home></Home>}></Route>
             <Route
               path="/products"
               element={<ProductList></ProductList>}
             ></Route>
-            <Route path="/about" element={<About></About>}></Route>
+            <Route path="/about" element={<About></About>}></Route> */}
           </Routes>
         </main>
       </Router>
