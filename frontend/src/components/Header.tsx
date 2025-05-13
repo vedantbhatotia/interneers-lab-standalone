@@ -9,6 +9,6 @@ export const Header = () => (
       color: "white",
     }}
   >
-    <h1>Product Catalog</h1>
+    <h1>Product & Categories Catalog</h1>
   </header>
 );

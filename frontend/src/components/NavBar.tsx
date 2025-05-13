@@ -13,5 +13,6 @@ export const NavBar = () => (
     <Link to="/home">Home</Link>
     <Link to="/products">Products</Link>
     <Link to="/about">About</Link>
+    <Link to="/categories">Categories</Link>
   </nav>
 );
