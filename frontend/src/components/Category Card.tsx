@@ -24,6 +24,7 @@ export const CategoryCard = ({ category, expanded, onClick }: Props) => {
       }}
     >
       <h3>{category.title}</h3>
+      {/* {category.id} */}
       {expanded && (
         <div style={{ marginTop: "0.5rem" }}>
           <p>{category.description}</p>

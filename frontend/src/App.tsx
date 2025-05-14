@@ -6,6 +6,7 @@ import ProductListPage from "pages/ProductListPage";
 import CategoryListPage from "pages/CategoryListPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProductDetailPage from "pages/ProductDetailPage";
+import CategoryDetailPage from "pages/CategoryDetailpage";
 function App() {
   return (
     <>
@@ -25,6 +26,10 @@ function App() {
             <Route
               path="/products/:productId"
               element={<ProductDetailPage></ProductDetailPage>}
+            ></Route>
+            <Route
+              path="/categories/:categoryId"
+              element={<CategoryDetailPage></CategoryDetailPage>}
             ></Route>
           </Routes>
         </main>
