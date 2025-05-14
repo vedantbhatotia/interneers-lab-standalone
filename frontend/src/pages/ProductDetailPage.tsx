@@ -6,11 +6,12 @@ import ErrorMessage from "components/ErrorMessage";
 
 export interface Product {
   id: string;
-  title: string;
+  name: string;
   description: string;
   price: number;
   stock: number;
-  category?: {
+  brand: string;
+  category_object?: {
     id: string;
     title: string;
   };
@@ -21,6 +22,7 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     if (!productId) return;
     const fetchProduct = async () => {
@@ -48,7 +50,7 @@ export default function ProductDetailPage() {
 
   return (
     <div style={{ maxWidth: 600, margin: "0 auto" }}>
-      <h1>{product.title}</h1>
+      <h1>{product.name}</h1>
       <p>{product.description}</p>
       <p>
         <strong>Price:</strong> ${product.price.toFixed(2)}
@@ -56,11 +58,14 @@ export default function ProductDetailPage() {
       <p>
         <strong>Stock:</strong> {product.stock}
       </p>
-      {product.category && (
+      <p>
+        <strong>Brand:</strong> {product.brand}
+      </p>
+      {product.category_object && (
         <p>
           <strong>Category:</strong>{" "}
-          <Link to={`/categories/${product.category.id}`}>
-            {product.category.title}
+          <Link to={`/categories/${product.category_object.id}`}>
+            {product.category_object.title}
           </Link>
         </p>
       )}

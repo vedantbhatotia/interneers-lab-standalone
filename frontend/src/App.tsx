@@ -23,7 +23,7 @@ function App() {
               element={<CategoryListPage></CategoryListPage>}
             ></Route>
             <Route
-              path="/products:/productId"
+              path="/products/:productId"
               element={<ProductDetailPage></ProductDetailPage>}
             ></Route>
           </Routes>

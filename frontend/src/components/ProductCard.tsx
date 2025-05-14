@@ -20,6 +20,7 @@ export const ProductCard = ({ product, expanded, onClick }: Props) => {
       }}
     >
       <h3>{product.name}</h3>
+      {product.id}
       <p>Price: {product.price}</p>
       {expanded && (
         <div style={{ marginTop: "0.5rem" }}>
