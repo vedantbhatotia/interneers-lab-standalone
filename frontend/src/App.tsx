@@ -5,6 +5,7 @@ import { NavBar } from "components/NavBar";
 import ProductListPage from "pages/ProductListPage";
 import CategoryListPage from "pages/CategoryListPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ProductDetailPage from "pages/ProductDetailPage";
 function App() {
   return (
     <>
@@ -21,8 +22,10 @@ function App() {
               path="/categories"
               element={<CategoryListPage></CategoryListPage>}
             ></Route>
-            {/* <Route path="/home" element={<Home></Home>}></Route>
-            <Route path="/about" element={<About></About>}></Route> */}
+            <Route
+              path="/products:/productId"
+              element={<ProductDetailPage></ProductDetailPage>}
+            ></Route>
           </Routes>
         </main>
       </Router>
