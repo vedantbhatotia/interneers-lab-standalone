@@ -124,7 +124,25 @@ export default function ProductDetailPage() {
 
   return (
     <div style={{ maxWidth: 600, margin: "0 auto" }}>
-      <Link to="/products">Back to Products</Link>
+      <Link
+        to="/products"
+        style={{ display: "inline-block", marginBottom: "0.5rem" }}
+      >
+        Back to Products
+      </Link>
+      <nav aria-label="breadcrumb" style={{ margin: "1rem 0" }}>
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to="/">Home</Link>
+          </li>
+          <li className="breadcrumb-item">
+            <Link to="/products">Products</Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {product.name}
+          </li>
+        </ol>
+      </nav>
       <h1>Edit Product</h1>
       {successMessage && (
         <div className="success-message">{successMessage}</div>
