@@ -10,7 +10,7 @@ export const NavBar = () => (
       background: "#f0f0f0",
     }}
   >
-    <Link to="/home">Home</Link>
+    <Link to="/">Home</Link>
     <Link to="/products">Products</Link>
     <Link to="/about">About</Link>
     <Link to="/categories">Categories</Link>

@@ -12,10 +12,7 @@ export interface Product {
   price: number;
   stock: number;
   brand: string;
-  category_object?: {
-    id: string;
-    title: string;
-  };
+  category_object?: { id: string; title: string };
 }
 
 export default function ProductDetailPage() {
@@ -38,6 +35,7 @@ export default function ProductDetailPage() {
     brand: "",
     category: "",
   });
+
   useEffect(() => {
     if (!productId) return;
     setLoading(true);
@@ -57,7 +55,7 @@ export default function ProductDetailPage() {
         const cats = await listCategories();
         setCategories(cats.data);
       } catch (err: any) {
-        setError(err.message);
+        setError(err.response?.data?.error || err.message);
       } finally {
         setLoading(false);
       }
@@ -66,9 +64,16 @@ export default function ProductDetailPage() {
 
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorMessage message={error} />;
-  if (!product) return <div>Product not found or no data available.</div>;
+  if (!product)
+    return (
+      <div className="text-center py-8">
+        Product not found or no data available.
+      </div>
+    );
 
-  const handleChange = (e: any) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormState((prev) => ({
       ...prev,
@@ -81,19 +86,11 @@ export default function ProductDetailPage() {
     setSaving(true);
     setError(null);
     try {
-      const payload = {
-        name: formState.name,
-        description: formState.description,
-        price: formState.price,
-        stock: formState.stock,
-        brand: formState.brand,
-        category: formState.category,
-      };
-      const res = await updateProduct(productId!, payload);
+      const res = await updateProduct(productId!, formState);
       setProduct(res.data);
       setSuccessMessage("Product updated successfully.");
     } catch (err: any) {
-      setError(err.message);
+      setError(err.response?.data?.error || err.message);
     } finally {
       setSaving(false);
     }
@@ -111,105 +108,89 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: "0 auto" }}>
+    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
       <Link
         to="/products"
-        style={{ display: "inline-block", marginBottom: "0.5rem" }}
+        className="inline-block text-blue-600 hover:underline mb-4"
       >
-        Back to Products
+        &larr; Back to Products
       </Link>
 
-      {/* Breadcrumb */}
-      <nav aria-label="breadcrumb" style={{ margin: "1rem 0" }}>
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item">
-            <Link to="/">Home</Link>
-          </li>
-          <li className="breadcrumb-item">
-            <Link to="/products">Products</Link>
-          </li>
-          <li className="breadcrumb-item active" aria-current="page">
-            {product.name}
-          </li>
-        </ol>
+      <nav className="text-gray-600 text-sm mb-6">
+        <Link to="/">Home</Link> / <Link to="/products">Products</Link> /{" "}
+        <span className="font-medium">{product.name}</span>
       </nav>
 
-      <h1>Edit Product: {product.name}</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-2">
+        Edit Product: {product.name}
+      </h1>
 
-      {/* Category link under title */}
       {product.category_object && (
-        <p>
+        <p className="text-gray-700 mb-4">
           Category:{" "}
-          <Link to={`/categories/${product.category_object.id}`}>
+          <Link
+            to={`/categories/${product.category_object.id}`}
+            className="text-blue-600 hover:underline"
+          >
             {product.category_object.title}
           </Link>
         </p>
       )}
 
       {successMessage && (
-        <div className="success-message">{successMessage}</div>
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mb-4">
+          {successMessage}
+        </div>
       )}
-      {error && <ErrorMessage message={error} />}
 
-      <form onSubmit={handleSubmit}>
-        <label>
-          Name:
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+      >
+        <div>
+          <label className="block text-gray-700 mb-1">Name</label>
           <input
             type="text"
             name="name"
             value={formState.name}
             onChange={handleChange}
             required
+            className="w-full border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-        </label>
-        <label>
-          Description:
-          <input
-            type="text"
-            name="description"
-            value={formState.description}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label>
-          Price:
-          <input
-            type="number"
-            name="price"
-            value={formState.price}
-            onChange={handleChange}
-            step="0.01"
-            required
-          />
-        </label>
-        <label>
-          Stock:
-          <input
-            type="number"
-            name="stock"
-            value={formState.stock}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label>
-          Brand:
+        </div>
+
+        <div>
+          <label className="block text-gray-700 mb-1">Brand</label>
           <input
             type="text"
             name="brand"
             value={formState.brand}
             onChange={handleChange}
             required
+            className="w-full border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-        </label>
-        <label>
-          Category:
+        </div>
+
+        <div>
+          <label className="block text-gray-700 mb-1">Description</label>
+          <input
+            type="text"
+            name="description"
+            value={formState.description}
+            onChange={handleChange}
+            required
+            className="w-full border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 mb-1">Category</label>
           <select
             name="category"
             value={formState.category}
             onChange={handleChange}
             required
+            className="w-full border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">-- Select a category --</option>
             {categories.map((c) => (
@@ -218,15 +199,52 @@ export default function ProductDetailPage() {
               </option>
             ))}
           </select>
-        </label>
-        <button type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save Changes"}
-        </button>
+        </div>
+
+        <div>
+          <label className="block text-gray-700 mb-1">Price</label>
+          <input
+            type="number"
+            name="price"
+            value={formState.price}
+            onChange={handleChange}
+            step="0.01"
+            required
+            className="w-full border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 mb-1">Stock</label>
+          <input
+            type="number"
+            name="stock"
+            value={formState.stock}
+            onChange={handleChange}
+            required
+            className="w-full border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div className="md:col-span-2 flex space-x-4">
+          <button
+            type="submit"
+            disabled={saving}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+          >
+            {saving ? "Saving..." : "Save Changes"}
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          >
+            Delete Product
+          </button>
+        </div>
       </form>
 
-      <button onClick={handleDelete} style={{ marginTop: 16, color: "red" }}>
-        Delete Product
-      </button>
+      {error && <ErrorMessage message={error} />}
     </div>
   );
 }
