@@ -3,11 +3,13 @@ import { listCategories } from "api/categories";
 import LoadingSpinner from "components/LoadingSpinner";
 import ErrorMessage from "components/ErrorMessage";
 import { CategoryList } from "components/CategoryList";
+
 type Category = {
   id: string;
   title: string;
   description: string;
 };
+
 export default function CategoryListPage() {
   const [categories, setCategories] = useState<Category[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -28,9 +30,21 @@ export default function CategoryListPage() {
     };
     fetchCategories();
   }, []);
+
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorMessage message={error} />;
-  // placeholder when there are no products
-  if (!categories) return null;
-  return <CategoryList categories={categories} />;
+
+  if (!categories)
+    return (
+      <div className="max-w-3xl mx-auto p-4 text-center text-gray-500 mt-10">
+        No categories available.
+      </div>
+    );
+
+  return (
+    <div className="max-w-3xl mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6 text-gray-900">Categories</h1>
+      <CategoryList categories={categories} />
+    </div>
+  );
 }
