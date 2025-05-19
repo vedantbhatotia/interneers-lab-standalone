@@ -4,6 +4,7 @@ import { getProduct, updateProduct, deleteProduct } from "api/products";
 import { listCategories } from "api/categories";
 import LoadingSpinner from "components/LoadingSpinner";
 import ErrorMessage from "components/ErrorMessage";
+
 export interface Product {
   id: string;
   name: string;
@@ -16,21 +17,19 @@ export interface Product {
     title: string;
   };
 }
-export interface Category {
-  id: string;
-  title: string;
-}
+
 export default function ProductDetailPage() {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState<Product | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<{ id: string; title: string }[]>(
+    [],
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
   const [formState, setFormState] = useState({
     name: "",
     description: "",
@@ -39,14 +38,13 @@ export default function ProductDetailPage() {
     brand: "",
     category: "",
   });
-
   useEffect(() => {
     if (!productId) return;
-    const fetchData = async () => {
-      setLoading(true);
+    setLoading(true);
+    (async () => {
       try {
         const res = await getProduct(productId);
-        const data = res.data;
+        const data = res.data as Product;
         setProduct(data);
         setFormState({
           name: data.name,
@@ -63,8 +61,7 @@ export default function ProductDetailPage() {
       } finally {
         setLoading(false);
       }
-    };
-    fetchData();
+    })();
   }, [productId]);
 
   if (loading) return <LoadingSpinner />;
@@ -94,15 +91,6 @@ export default function ProductDetailPage() {
       };
       const res = await updateProduct(productId!, payload);
       setProduct(res.data);
-      const updated = res.data;
-      setFormState({
-        name: updated.name,
-        description: updated.description,
-        price: updated.price,
-        stock: updated.stock,
-        brand: updated.brand,
-        category: updated.category_object?.id || "",
-      });
       setSuccessMessage("Product updated successfully.");
     } catch (err: any) {
       setError(err.message);
@@ -118,7 +106,7 @@ export default function ProductDetailPage() {
       await deleteProduct(productId!);
       navigate("/products");
     } catch (err: any) {
-      setError(err.message);
+      setError(err.response?.data?.error || err.message);
     }
   };
 
@@ -130,6 +118,8 @@ export default function ProductDetailPage() {
       >
         Back to Products
       </Link>
+
+      {/* Breadcrumb */}
       <nav aria-label="breadcrumb" style={{ margin: "1rem 0" }}>
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -143,10 +133,24 @@ export default function ProductDetailPage() {
           </li>
         </ol>
       </nav>
-      <h1>Edit Product</h1>
+
+      <h1>Edit Product: {product.name}</h1>
+
+      {/* Category link under title */}
+      {product.category_object && (
+        <p>
+          Category:{" "}
+          <Link to={`/categories/${product.category_object.id}`}>
+            {product.category_object.title}
+          </Link>
+        </p>
+      )}
+
       {successMessage && (
         <div className="success-message">{successMessage}</div>
       )}
+      {error && <ErrorMessage message={error} />}
+
       <form onSubmit={handleSubmit}>
         <label>
           Name:
@@ -219,10 +223,10 @@ export default function ProductDetailPage() {
           {saving ? "Saving..." : "Save Changes"}
         </button>
       </form>
+
       <button onClick={handleDelete} style={{ marginTop: 16, color: "red" }}>
         Delete Product
       </button>
-      {error && <ErrorMessage message={error} />}
     </div>
   );
 }
