@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@radix-ui/react-primitive": "^2.1.2",
+    "@radix-ui/react-slot": "^1.2.2",
+    "@shadcn/ui": "^0.0.4",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -10,6 +13,8 @@
     "@types/node": "^22.13.4",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "axios": "^1.9.0",
+    "lucide-react": "^0.511.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.6.0",
@@ -22,7 +27,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "tailwind:init": "node_modules/.bin/tailwindcss init -p"
   },
   "eslintConfig": {
     "extends": [
@@ -45,8 +51,13 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@playwright/test": "^1.50.1",
+    "@tailwindcss/cli": "^4.1.7",
+    "autoprefixer": "^10.4.21",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.3",
-    "prettier": "^3.5.1"
+    "postcss": "^8.5.3",
+    "prettier": "^3.5.1",
+    "tailwindcss": "^4.1.7",
+    "tailwindcss-cli": "^0.1.2"
   }
 }

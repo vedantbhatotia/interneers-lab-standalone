@@ -1,34 +1,38 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import { Header } from "components/Header";
-import { NavBar } from "components/NavBar";
-import { ProductList } from "components/ProductList";
+// import { NavBar } from "components/NavBar";
+import ProductListPage from "pages/ProductListPage";
+import CategoryListPage from "pages/CategoryListPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-const Home = () => (
-  <div>
-    <h2>Home</h2>
-  </div>
-);
-const About = () => (
-  <div>
-    <h2>About</h2>
-  </div>
-);
+import ProductDetailPage from "pages/ProductDetailPage";
+import CategoryDetailPage from "pages/CategoryDetailpage";
+import HomePage from "pages/Home";
 function App() {
   return (
     <>
       <Router>
         <Header></Header>
-        <NavBar></NavBar>
+        {/* <NavBar></NavBar> */}
         <main style={{ padding: "1rem" }}>
           <Routes>
-            <Route path="/home" element={<Home></Home>}></Route>
+            <Route path="/" element={<HomePage></HomePage>}></Route>
             <Route
               path="/products"
-              element={<ProductList></ProductList>}
+              element={<ProductListPage></ProductListPage>}
             ></Route>
-            <Route path="/about" element={<About></About>}></Route>
+            <Route
+              path="/categories"
+              element={<CategoryListPage></CategoryListPage>}
+            ></Route>
+            <Route
+              path="/products/:productId"
+              element={<ProductDetailPage></ProductDetailPage>}
+            ></Route>
+            <Route
+              path="/categories/:categoryId"
+              element={<CategoryDetailPage></CategoryDetailPage>}
+            ></Route>
           </Routes>
         </main>
       </Router>
